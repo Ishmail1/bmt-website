@@ -57,6 +57,24 @@ section{padding:clamp(64px,8vw,112px) 0}
   .menu li.mcontact{margin-top:18px;text-align:center}.menu li.mcontact a{font-size:15px;line-height:28px;display:block;opacity:.85}
 }
 @media(min-width:961px){.menu li.mcontact{display:none}}
+/* Header: no movement when it turns navy.
+   1) The navy background + shadow live on a ::before layer that fades in (opacity), so the header element's own paint never
+      changes between states and browsers do not re-rasterise/re-snap the text when the background appears.
+   2) Every item in the bar sits on a whole-pixel position (no fractional tops from line-height maths). */
+.site-header.solid,.site-header.always{background:transparent;box-shadow:none}
+.site-header::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--navy);box-shadow:0 2px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .3s;pointer-events:none}
+.site-header.solid::before,.site-header.always::before{opacity:1}
+.brand span{line-height:14px}
+@media(min-width:961px){
+  .menu>li{display:flex;align-items:flex-start;height:30px}
+  .menu>li>a:not(.btn){display:block;line-height:17px}
+  .menu>li.cta{height:auto;align-items:center}
+  .menu .btn{line-height:17px;padding:13px 22px 12px}
+}
+@media(max-width:960px){
+  .brand span{line-height:12px}
+  .mbook{line-height:16px}
+}
 
 /* Home hero: full viewport on every device (hop.group-style statement) */
 /* Flex column: content block is centred in the space between the header and the scroll cue,
