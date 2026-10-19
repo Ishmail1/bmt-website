@@ -351,3 +351,57 @@ textarea{min-height:130px;resize:vertical}
 .gallery-soon strong{font-size:clamp(20px,2.2vw,26px);font-weight:800;letter-spacing:.02em;text-transform:uppercase}
 .gallery-soon span{color:var(--muted);font-size:15px;max-width:440px}
 .gallery-soon .btn{margin-top:10px}
+/* ===== Palette: restrained, mostly neutral. Navy stays only on header-on-scroll, mobile menu and footer;
+   bright blue only on primary buttons, text links and focus rings. (Header rules above are untouched.) ===== */
+:root{--ink:#111827;--text:#111827;--muted:#4B5563;--grey:#F5F6F8;--line:#E5E7EB;--line-2:#D1D5DB}
+.eyebrow{color:#6B7280}
+.rule{background:var(--ink)}
+.btn-blue{box-shadow:0 1px 2px rgba(17,24,39,.12)}.btn-blue:hover{box-shadow:0 6px 16px rgba(17,24,39,.16)}
+/* secondary buttons: charcoal outline */
+.btn-navy{background:#fff;color:var(--ink);border-color:var(--ink)}.btn-navy:hover{background:var(--ink);color:#fff;box-shadow:none}
+/* hero + overlays: dark but neutral, not blue-tinted */
+.hero-bg::after{background:linear-gradient(180deg,rgba(12,14,18,.5) 0%,rgba(12,14,18,.58) 55%,rgba(12,14,18,.8) 100%)}
+.page-hero{background-color:#1F2937}
+.page-hero::before{background:linear-gradient(90deg,rgba(12,14,18,.82),rgba(12,14,18,.42) 60%,rgba(12,14,18,.18))}
+.proj-hero::after{background:linear-gradient(0deg,rgba(12,14,18,.88),rgba(12,14,18,.22) 55%,rgba(12,14,18,.32))}
+.slide .cap,.pcard .cap{background:linear-gradient(0deg,rgba(12,14,18,.82),rgba(12,14,18,0))}
+.nextp div{background:rgba(12,14,18,.55)}
+.lightbox{background:rgba(10,11,14,.94)}.lightbox button{color:var(--ink)}
+.preview-ribbon{background:rgba(17,24,39,.9)}
+/* cards, shadows, controls */
+.feature{box-shadow:0 1px 2px rgba(17,24,39,.04)}.feature:hover{border-color:var(--line-2);box-shadow:0 16px 36px rgba(17,24,39,.08)}
+.slide{background:#E5E7EB;box-shadow:0 1px 2px rgba(17,24,39,.06)}.slide:hover{box-shadow:0 16px 36px rgba(17,24,39,.14)}
+.svc:hover{box-shadow:0 14px 34px rgba(17,24,39,.08)}
+.arrow{border-color:var(--line-2);color:var(--ink)}.arrow:hover{background:var(--ink);border-color:var(--ink);color:#fff}
+.feature img,.sicon,.whatwedo img,.snav img,.ticks img{filter:grayscale(1) brightness(.75) contrast(2.1)}
+/* CTA band: light card instead of a navy block, so it no longer merges into the footer */
+.cta-band{background:#fff;color:var(--ink)}
+.cta-band>.container{background:var(--grey);border:1px solid var(--line);border-radius:16px;padding:clamp(40px,6vw,72px) clamp(20px,4vw,48px)}
+.cta-band p{color:var(--muted);opacity:1}
+.cta-band .btn-outline{border-color:var(--ink);color:var(--ink);background:#fff}.cta-band .btn-outline:hover{background:var(--ink);color:#fff}
+/* How we work: neutral lines and numbers */
+.step{border-top-color:var(--line-2)}.step::before{background:#9CA3AF}
+.step b{color:#9CA3AF}
+/* about / services / projects / contact accents */
+.intro-grid>div:first-child{border-right-color:var(--line-2)}
+.why>div:first-child{border-right-color:var(--line)}
+@media(max-width:860px){.intro-grid>div:first-child{border-bottom-color:var(--line-2)}.why>div:first-child{border-bottom-color:var(--line)}}
+.mission strong,.intro-line,.quote blockquote,.qcard p,.qcard cite b,.pull strong{color:var(--ink)}
+.quote blockquote::before,.qcard p::before{color:var(--line-2)}
+.chip{color:var(--ink)}.chip:hover{background:var(--line)}.chip.active{background:var(--ink);color:#fff}
+input,textarea{border-color:#9CA3AF;color:var(--ink)}
+.socials a{background:var(--ink)}.socials a:hover{background:var(--blue)}
+.fgrid .socials a{background:rgba(255,255,255,.12)}.fgrid .socials a:hover{background:var(--blue)}
+.bul li::before{background-color:var(--ink)}
+.related a:hover{background:var(--ink);color:#fff}
+.snav a:hover{border-color:var(--ink)}
+.facts dt{color:#6B7280}
+.story h3{color:#6B7280}
+.legal p,.legal li{color:#374151}
+.form-err{color:var(--ink)}
+.skip{color:var(--ink)}
+.ph{background:#F3F4F6;color:#374151;border-color:#9CA3AF}
+.ph-banner{background:#F3F4F6;border-color:#9CA3AF;color:#374151}
+.tcard .ph-img{background:repeating-linear-gradient(135deg,#F3F4F6 0 12px,#F9FAFB 12px 24px);border-color:#9CA3AF;color:#4B5563}
+.gallery figure.gallery-soon{border-color:var(--line-2);background:repeating-linear-gradient(135deg,#F5F6F8 0 14px,#EFF1F4 14px 28px);color:var(--ink)}
+.gallery-soon svg{fill:#9CA3AF}
