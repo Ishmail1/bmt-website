@@ -44,3 +44,25 @@
     });
   }
 })();
+// Theme switcher (presentation aid): data-theme on <html>, saved in localStorage, ?theme= links supported.
+(function(){
+  var root=document.documentElement, sw=document.getElementById('theme-switch'); if(!sw) return;
+  var NAMES={neutral:'Neutral',classic:'Classic Blue',midnight:'Midnight'}, KEY='bmt-theme';
+  var tog=sw.querySelector('.theme-toggle'), opts=sw.querySelectorAll('.theme-opt');
+  function paint(t){
+    opts.forEach(function(o){o.setAttribute('aria-pressed',String(o.getAttribute('data-theme-opt')===t))});
+    sw.querySelector('.theme-name').textContent=NAMES[t]; tog.querySelector('.theme-sw').setAttribute('data-t',t);
+    tog.setAttribute('aria-label','Theme: '+NAMES[t]+'. Change theme');
+  }
+  function setOpen(o){sw.classList.toggle('open',o);tog.setAttribute('aria-expanded',String(o));}
+  function apply(t){
+    if(!NAMES[t]) return; root.setAttribute('data-theme',t); try{localStorage.setItem(KEY,t)}catch(e){}
+    try{var u=new URL(location.href); if(u.searchParams.has('theme')){u.searchParams.set('theme',t);history.replaceState(null,'',u)}}catch(e){}
+    paint(t);
+  }
+  paint(NAMES[root.getAttribute('data-theme')]?root.getAttribute('data-theme'):'neutral');
+  tog.addEventListener('click',function(e){e.stopPropagation();setOpen(!sw.classList.contains('open'))});
+  opts.forEach(function(o){o.addEventListener('click',function(){apply(o.getAttribute('data-theme-opt'));setOpen(false);tog.focus()})});
+  document.addEventListener('click',function(e){if(!sw.contains(e.target))setOpen(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
+})();
