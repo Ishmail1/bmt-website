@@ -274,8 +274,10 @@ textarea{min-height:130px;resize:vertical}
 .pcard .go{display:inline-block;margin-top:10px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:0;transform:translateY(6px);transition:.4s}
 .pcard:hover .go,.pcard:focus .go{opacity:1;transform:none}
 @media(hover:none){.pcard .go{opacity:1;transform:none}}
-.pgrid.three{grid-template-columns:repeat(3,1fr)}
-@media(max-width:960px){.pgrid.three{grid-template-columns:1fr 1fr}}@media(max-width:600px){.pgrid.three{grid-template-columns:1fr}}
+.pgrid.three{grid-template-columns:repeat(6,1fr)}.pgrid.three>.pcard{grid-column:span 2}.pgrid.three>.pcard.pfeature{grid-column:1/-1}
+/* last row of the projects grid: no empty cells (classes set by site.js / build.py for the visible cards) */
+@media(min-width:961px){.pgrid.three>.pcard.r3-2{grid-column:span 3;aspect-ratio:16/10}.pgrid.three>.pcard.r3-1{grid-column:1/-1;aspect-ratio:21/9}}
+@media(max-width:960px){.pgrid.three{grid-template-columns:1fr 1fr}.pgrid.three>.pcard{grid-column:auto}.pgrid.three>.pcard.pfeature,.pgrid.three>.pcard.r2-1{grid-column:1/-1;aspect-ratio:21/9}}@media(max-width:700px){.pgrid.three>.pcard.r2-1{aspect-ratio:4/3}}@media(max-width:600px){.pgrid.three{grid-template-columns:1fr}}
 .pfeature{grid-column:1/-1;aspect-ratio:21/9}
 @media(max-width:700px){.pfeature{aspect-ratio:4/3}}
 .count{font-size:14px;color:var(--muted);text-align:center;margin-top:-20px;margin-bottom:24px}
@@ -304,7 +306,11 @@ textarea{min-height:130px;resize:vertical}
 .gallery figure.tall{aspect-ratio:3/4}
 .gallery img{width:100%;height:100%;object-fit:cover;transition:transform .7s ease-out;cursor:zoom-in}
 .gallery figure:hover img{transform:scale(1.03)}
-@media(max-width:600px){.gallery{grid-template-columns:1fr}.gallery figure.wide{aspect-ratio:4/3}}
+/* gap-free gallery rows (see gallery_plan in build.py) */
+.gallery figure.stack{grid-row:span 2;aspect-ratio:auto}
+.gallery figure.sq{aspect-ratio:1/1}
+.gallery figure.solo{grid-column:1/-1;justify-self:center;width:calc(50% - 5px)}
+@media(max-width:600px){.gallery{grid-template-columns:1fr}.gallery figure.wide{aspect-ratio:4/3}.gallery figure.stack{grid-row:auto;aspect-ratio:3/4}.gallery figure.sq{aspect-ratio:4/3}.gallery figure.sq.tall{aspect-ratio:3/4}.gallery figure.solo{width:100%}}
 .quote{max-width:900px;margin:0 auto;text-align:center}
 .quote blockquote{font-size:clamp(20px,2.4vw,30px);line-height:1.45;font-weight:500;color:var(--navy)}
 .quote blockquote::before{content:"“";display:block;font-size:80px;line-height:.6;color:var(--blue);margin-bottom:10px}

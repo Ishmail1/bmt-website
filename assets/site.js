@@ -23,7 +23,15 @@
     var f=ch.dataset.filter,n=0;
     document.querySelectorAll('.pcard').forEach(function(c){var show=f==='all'||(c.dataset.cat||'').split(' ').indexOf(f)>=0;c.classList.toggle('hide',!show);c.classList.toggle('pfeature',show&&f==='all'&&c===document.querySelector('.pcard'));if(show){n++;c.classList.add('in');}});
     if(cnt) cnt.textContent=n+(n===1?' project':' projects');
+    balance();
   });});
+  // fill the last row of the projects grid (3-up desktop, 2-up tablet) so it never ends with an empty cell
+  function balance(){var g=document.querySelector('.pgrid.three');if(!g)return;
+    var v=[].filter.call(g.querySelectorAll('.pcard'),function(c){return !c.classList.contains('hide')&&!c.classList.contains('pfeature')}),k=v.length;
+    g.querySelectorAll('.pcard').forEach(function(c){c.classList.remove('r3-1','r3-2','r2-1')});
+    if(k%3===1) v[k-1].classList.add('r3-1'); if(k%3===2){v[k-2].classList.add('r3-2');v[k-1].classList.add('r3-2');}
+    if(k%2===1) v[k-1].classList.add('r2-1');}
+  balance();
   // lightbox
   var lb=document.querySelector('.lightbox');
   function closeLb(){lb&&lb.classList.remove('on')}
