@@ -49,10 +49,15 @@ section{padding:clamp(64px,8vw,112px) 0}
   .brand img{height:34px}.brand span{font-size:9px}
   .burger{display:block}
   .mbook{display:inline-flex;justify-content:center;margin-left:auto;margin-right:6px;padding:12px 16px;min-height:44px;min-width:44px;font-size:13px;letter-spacing:.08em}
-  .menu{position:fixed;inset:0;background:var(--navy);flex-direction:column;justify-content:center;gap:6px;transform:translateX(100%);transition:transform .35s ease;padding:24px}
+  .menu{position:fixed;inset:0;background:var(--navy);flex-direction:column;justify-content:center;gap:4px;transform:translateX(100%);transition:transform .35s ease;padding:24px}
   .open .menu{transform:none}
   .menu a{font-size:20px;line-height:1;padding:16px 0}
-  .menu a[aria-current]{border-bottom-color:var(--blue)}
+  /* Mobile underline: the links are inline with 16px padding and line-height:1, so a border-bottom sat 16px below the text,
+     i.e. through the next item. Use a text-decoration underline (hugs the text) and inline-block 44px tap targets instead. */
+  .menu a:not(.btn){border-bottom:0;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:7px;text-decoration-color:transparent;transition:text-decoration-color .2s,color .2s}
+  .menu>li:not(.mcontact)>a:not(.btn){display:inline-block;padding:12px 0}
+  .menu a:not(.btn):hover{text-decoration-color:currentColor}
+  .menu a[aria-current]{text-decoration-color:var(--blue)}
   .menu li.cta{margin-top:20px}.menu .btn{font-size:14px;line-height:1.2;padding:14px 26px;min-height:48px}
   .menu li.mcontact{margin-top:18px;text-align:center}.menu li.mcontact a{font-size:15px;line-height:28px;display:block;opacity:.85}
 }
@@ -391,3 +396,24 @@ input,textarea{border-color:#9CA3AF;color:var(--ink)}
 .legal p,.legal li{color:#374151}
 .form-err{color:var(--ink)}
 .skip{color:var(--ink)}
+
+/* Fluid layout (live3): every section, the hero and the header share one container width and one fluid side gutter,
+   so content lines up with the header/hero edges at every device width instead of sitting in a narrower 1200px column.
+   Grid gaps scale with the viewport and column counts step down where cards would otherwise be squeezed. */
+:root{--max:1320px;--gutter:clamp(24px,4vw,60px);--gap:clamp(16px,1.6vw + 8px,32px)}
+@media(min-width:1680px){:root{--max:1520px}}
+.container{width:min(var(--max),100% - 2*var(--gutter))}
+.nav{width:min(var(--max),100% - 2*var(--gutter))}
+.features,.svc-grid,.steps,.quotes{gap:var(--gap)}
+.track{gap:var(--gap)}
+.slide{flex-basis:calc((100% - 2*var(--gap))/3)}
+.pgrid{gap:var(--gap)}
+.gallery{gap:clamp(10px,1vw + 4px,18px)}
+@media(max-width:1199px){.features,.svc-grid,.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1099px){.quotes{grid-template-columns:1fr 1fr}}
+@media(max-width:960px){.slide{flex-basis:calc((100% - var(--gap))/2)}}
+@media(max-width:600px){.slide{flex-basis:85%}}
+@media(max-width:560px){.features,.svc-grid,.steps{grid-template-columns:1fr}}
+@media(max-width:600px){.quotes{grid-template-columns:1fr}}
+@media(min-width:1680px){.features,.svc-grid,.steps{gap:36px}}
+.whatwedo{max-width:1120px;margin-inline:auto;column-gap:calc(2*var(--gap))}
