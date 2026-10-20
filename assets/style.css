@@ -427,3 +427,21 @@ input,textarea{border-color:#9CA3AF;color:var(--ink)}
 .whatwedo{max-width:1120px;margin-inline:auto;column-gap:calc(2*var(--gap))}
 /* SEO pass (live4): project -> service links in the facts row */
 .facts a.svc-link{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;text-decoration-color:var(--line-2)}.facts a.svc-link:hover{color:var(--blue);text-decoration-color:currentColor}
+/* Cookie consent banner (live5): GA4 Consent Mode v2. Hidden unless html.cc-ask (no stored choice, or 'Cookie settings' reopened it).
+   position:fixed so it never shifts layout; z-index below the header (50) so the open mobile menu covers it; hides the mobile sticky CTA while open. */
+.cc{display:none;position:fixed;left:0;right:0;bottom:0;z-index:46;background:#fff;color:var(--ink);border-top:1px solid var(--line-2);box-shadow:0 -6px 24px rgba(17,24,39,.12);padding:16px var(--gutter) calc(16px + env(safe-area-inset-bottom,0px));font-size:14px;line-height:1.5}
+.cc-ask .cc{display:block}
+.cc-ask .sticky-cta{display:none}
+.cc p{margin:0 0 12px;color:var(--ink)}
+.cc-b{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.cc-btn{flex:1 1 0;min-width:96px;min-height:44px;padding:10px 18px;border-radius:6px;border:1.5px solid var(--ink);background:var(--ink);color:#fff;font:600 13px/1.2 inherit;font-family:inherit;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s}
+.cc-btn:hover{background:var(--blue);border-color:var(--blue)}
+.cc-l{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.cc-l:hover{color:var(--blue)}
+.cc :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+@media(min-width:600px){.cc{left:24px;right:auto;bottom:24px;width:380px;max-width:calc(100% - 48px);border:1px solid var(--line-2);border-radius:10px;padding:18px 20px;box-shadow:0 12px 32px rgba(17,24,39,.16)}}
+/* footer 'Cookie settings' (a button: it opens the banner) styled as the footer links; .linkbtn = inline text-link button */
+.cookie-settings{background:none;border:0;padding:0;font:inherit;color:rgba(255,255,255,.78);cursor:pointer;text-align:left;transition:color .2s}.cookie-settings:hover{color:#fff}
+.cookie-settings.linkbtn{color:var(--blue);font-weight:600;text-decoration:underline;text-underline-offset:3px}.cookie-settings.linkbtn:hover{color:var(--blue-d)}
+@media(max-width:600px){.cc-ask .site-footer{padding-bottom:calc(28px + 168px + env(safe-area-inset-bottom,0px))}}
+.legal h2[id]{scroll-margin-top:calc(var(--hh) + 16px)}

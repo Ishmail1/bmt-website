@@ -36,6 +36,20 @@
   var lb=document.querySelector('.lightbox');
   function closeLb(){lb&&lb.classList.remove('on')}
   if(lb){document.querySelectorAll('.gallery img').forEach(function(i){i.addEventListener('click',function(){lb.querySelector('img').src=i.dataset.full||i.src;lb.querySelector('img').alt=i.alt;lb.classList.add('on')})});lb.addEventListener('click',function(e){if(e.target!==lb.querySelector('img'))closeLb()});}
+  // cookie consent (GA4 Consent Mode v2, defaults set in <head>): Accept/Reject store bmt_consent=granted|denied in localStorage
+  // and update analytics_storage only (ad_storage, ad_user_data, ad_personalization stay denied). 'Cookie settings' reopens the banner.
+  var R=document.documentElement,cc=document.getElementById('cc'),opener=null;
+  function ccSet(v){
+    try{localStorage.setItem('bmt_consent',v)}catch(e){}
+    if(window.gtag) gtag('consent','update',{analytics_storage:v});
+    if(v==='denied') document.cookie.split(';').forEach(function(c){var n=c.split('=')[0].trim();   // withdrawn: remove existing _ga / _ga_* cookies
+      if(/^_ga(_|$)/.test(n)) ['',location.hostname,'.'+location.hostname.replace(/^www\./,'')].forEach(function(d){document.cookie=n+'=; Max-Age=0; path=/'+(d?'; domain='+d:'')});});
+    R.classList.remove('cc-ask'); if(opener){opener.focus();opener=null;}
+  }
+  if(cc){
+    cc.querySelectorAll('[data-cc]').forEach(function(x){x.addEventListener('click',function(){ccSet(x.getAttribute('data-cc'))})});
+    document.querySelectorAll('.cookie-settings').forEach(function(x){x.addEventListener('click',function(){opener=x;R.classList.add('cc-ask');cc.querySelector('[data-cc]').focus();})});
+  }
   // contact form: honeypot (_honey) + time trap + link limit, then POST to FormSubmit (free static-form relay -> info@businessmovers.tech).
   // Without JS the form still posts to FormSubmit directly (action attribute) and FormSubmit shows its own confirmation page.
   var form=document.getElementById('contact-form');
