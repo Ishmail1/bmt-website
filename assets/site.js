@@ -28,41 +28,30 @@
   var lb=document.querySelector('.lightbox');
   function closeLb(){lb&&lb.classList.remove('on')}
   if(lb){document.querySelectorAll('.gallery img').forEach(function(i){i.addEventListener('click',function(){lb.querySelector('img').src=i.dataset.full||i.src;lb.querySelector('img').alt=i.alt;lb.classList.add('on')})});lb.addEventListener('click',function(e){if(e.target!==lb.querySelector('img'))closeLb()});}
-  // contact form: honeypot + time trap + link limit, then mailto (free, no account)
+  // contact form: honeypot (_honey) + time trap + link limit, then POST to FormSubmit (free static-form relay -> info@businessmovers.tech).
+  // Without JS the form still posts to FormSubmit directly (action attribute) and FormSubmit shows its own confirmation page.
   var form=document.getElementById('contact-form');
   if(form){
-    var t0=Date.now(), note=document.getElementById('form-note');
+    var t0=Date.now(), note=document.getElementById('form-note'), btn=form.querySelector('button[type=submit]'), busy=false;
+    var FALLBACK=' Please email us at <a class="link" href="mailto:info@businessmovers.tech">info@businessmovers.tech</a> or call <a class="link" href="tel:+442039098200">020 3909 8200</a>.';
+    function say(h,err){note.innerHTML=err?'<span class="form-err">'+h+'</span>':h;}
     form.addEventListener('submit',function(e){
-      e.preventDefault();
-      if(form.company_website.value){return;}                 // bot filled hidden field
-      if(Date.now()-t0<3000){note.innerHTML='<span class="form-err">That was very quick. Please check your details and press Submit again.</span>';t0=0;return;}
+      e.preventDefault(); if(busy) return;
+      if(form._honey && form._honey.value){say('Thank you. Your message has been sent.');form.reset();return;}   // bot filled hidden field: pretend success, send nothing
+      if(Date.now()-t0<3000){say('That was very quick. Please check your details and press Submit again.',true);t0=0;return;}
       var d=new FormData(form),msg=String(d.get('message')||'');
-      if((msg.match(/https?:\/\//g)||[]).length>2){note.innerHTML='<span class="form-err">Please remove the links from your message (max 2).</span>';return;}
-      var body='Name: '+d.get('name')+'\nPhone: '+(d.get('phone')||'')+'\nEmail: '+d.get('email')+'\n\n'+msg;
-      window.location.href='mailto:info@businessmovers.tech?subject='+encodeURIComponent('Website enquiry from '+d.get('name'))+'&body='+encodeURIComponent(body);
-      note.textContent='Thanks. Your email app should now open with your message ready to send to info@businessmovers.tech. If nothing happens, email us directly or call 020 3909 8200.';
+      if((msg.match(/https?:\/\//g)||[]).length>2){say('Please remove the links from your message (max 2).',true);return;}
+      d.set('_subject','Website enquiry from '+d.get('name')); d.set('_replyto',String(d.get('email')||''));
+      var obj={}; d.forEach(function(v,k){obj[k]=v});
+      busy=true; btn.disabled=true; btn.textContent='Sending…';
+      fetch(form.action.replace('formsubmit.co/','formsubmit.co/ajax/'),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(obj)})
+        .then(function(r){return r.json().catch(function(){return {success:r.ok}})})
+        .then(function(j){
+          if(j && (j.success===true || j.success==='true')){form.reset();say('Thank you. Your message has been sent and our team will be in touch shortly.');}
+          else say('Sorry, your message could not be sent just now.'+FALLBACK,true);
+        })
+        .catch(function(){say('Sorry, your message could not be sent just now.'+FALLBACK,true);})
+        .then(function(){busy=false;btn.disabled=false;btn.textContent='Submit';});
     });
   }
-})();
-// Theme switcher (presentation aid): data-theme on <html>, saved in localStorage, ?theme= links supported.
-(function(){
-  var root=document.documentElement, sw=document.getElementById('theme-switch'); if(!sw) return;
-  var NAMES={neutral:'Neutral',classic:'Classic Blue',midnight:'Midnight'}, KEY='bmt-theme';
-  var tog=sw.querySelector('.theme-toggle'), opts=sw.querySelectorAll('.theme-opt');
-  function paint(t){
-    opts.forEach(function(o){o.setAttribute('aria-pressed',String(o.getAttribute('data-theme-opt')===t))});
-    sw.querySelector('.theme-name').textContent=NAMES[t]; tog.querySelector('.theme-sw').setAttribute('data-t',t);
-    tog.setAttribute('aria-label','Theme: '+NAMES[t]+'. Change theme');
-  }
-  function setOpen(o){sw.classList.toggle('open',o);tog.setAttribute('aria-expanded',String(o));}
-  function apply(t){
-    if(!NAMES[t]) return; root.setAttribute('data-theme',t); try{localStorage.setItem(KEY,t)}catch(e){}
-    try{var u=new URL(location.href); if(u.searchParams.has('theme')){u.searchParams.set('theme',t);history.replaceState(null,'',u)}}catch(e){}
-    paint(t);
-  }
-  paint(NAMES[root.getAttribute('data-theme')]?root.getAttribute('data-theme'):'neutral');
-  tog.addEventListener('click',function(e){e.stopPropagation();setOpen(!sw.classList.contains('open'))});
-  opts.forEach(function(o){o.addEventListener('click',function(){apply(o.getAttribute('data-theme-opt'));setOpen(false);tog.focus()})});
-  document.addEventListener('click',function(e){if(!sw.contains(e.target))setOpen(false)});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')setOpen(false)});
 })();
