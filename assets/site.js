@@ -76,7 +76,7 @@
     var LINK=/(https?:\/\/|\bwww\.|\[\/?(url|link|img)\b|<\s*a\s|href\s*=|\.(com|net|org|ru|info|xyz|top|biz)\/)/i;
     var FOREIGN=/[\u0400-\u052F\u2DE0-\u2DFF\uA640-\uA69F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\u0E00-\u0E7F]/g;
     var BLACKLIST='seo services,backlinks,guest post,link building,domain authority,first page of google,online casino,viagra,cialis,crypto investment,bitcoin investment,forex signals,porn,payday loan,binary options,buy followers,increase your traffic,[url=,href=,.ru/';
-    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+EM;}
+    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+dk('=QTOjBzMxETO0kTOykzN0EzMkBzNkZGMiBDMxcjYzYGO');}   // FormSubmit private form key (no email in the endpoint)
     function mark(e){if(e.isTrusted) human++;}
     ['keydown','pointerdown','touchstart','input'].forEach(function(t){form.addEventListener(t,mark,{passive:true})});
     btn.disabled=false;
