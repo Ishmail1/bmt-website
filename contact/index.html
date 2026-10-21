@@ -15,7 +15,7 @@ addEventListener("load",function(){var s=document.createElement("script");s.asyn
 <meta name="theme-color" content="#0A2A5E">
 <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" href="/assets/img/icon-96.png" type="image/png" sizes="96x96"><link rel="icon" href="/assets/img/icon-192.png" type="image/png" sizes="192x192"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=live6">
+<link rel="stylesheet" href="/assets/style.css?v=live7">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LocalBusiness","@id":"https://www.businessmoverstechnology.com/#organization","name":"Business Movers Technology","alternateName":"BMT","url":"https://www.businessmoverstechnology.com/","logo":{"@type":"ImageObject","url":"https://www.businessmoverstechnology.com/assets/img/icon-512.png","width":512,"height":512},"image":"https://www.businessmoverstechnology.com/assets/img/home-hero.jpg","description":"Workplace technology partner. Connectivity, IT, audio visual and meeting spaces for businesses across London.","telephone":"+44 20 3909 8200","email":"info@businessmovers.tech","address":{"@type":"PostalAddress","streetAddress":"1st Floor, 1 Bastwick Street","addressLocality":"London","postalCode":"EC1V 3NU","addressCountry":"GB"},"areaServed":{"@type":"City","name":"London"},"sameAs":["https://www.instagram.com/businessmovers.tech/","https://www.youtube.com/@Businessmoverstechnology","https://www.linkedin.com/company/business-movers-technology"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.businessmoverstechnology.com/"},{"@type":"ListItem","position":2,"name":"Contact Us","item":"https://www.businessmoverstechnology.com/contact/"}]}]}</script></head><body><a href="#main" class="skip">Skip to content</a><div class="cc" id="cc" role="region" aria-label="Cookie consent"><p>We use analytics cookies to understand how visitors find and use our site. No advertising cookies.</p>
 <div class="cc-b"><button type="button" class="cc-btn" data-cc="granted">Accept</button><button type="button" class="cc-btn" data-cc="denied">Reject</button><a class="cc-l" href="/privacy-policy/#cookies">Privacy policy</a></div></div>
 <header class="site-header">
@@ -29,15 +29,15 @@ addEventListener("load",function(){var s=document.createElement("script");s.asyn
 <main><section><div class="container contact-grid">
 <div class="reveal"><h2>Get in Touch</h2>
 <p>Looking for expert guidance on AV solutions and workplace technology? Our team at Business Movers Technology is here to help. Whether you need assistance with meeting room setups, digital signage or collaboration tools, we're just a phone call or email away.</p>
-<form id="contact-form" action="https://formsubmit.co/info@businessmovers.tech" method="POST" accept-charset="UTF-8">
-<input type="hidden" name="_subject" value="New enquiry from the BMT website">
-<input type="hidden" name="_template" value="table">
-<div class="row"><div class="f"><label for="name">First name *</label><input id="name" name="name" required maxlength="80" placeholder="Enter your first name" autocomplete="given-name"></div>
-<div class="f"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" maxlength="30" placeholder="Enter your phone number" autocomplete="tel"></div></div>
-<div class="f"><label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" placeholder="Enter your email" autocomplete="email"></div>
-<div class="f"><label for="message">Message</label><textarea id="message" name="message" maxlength="3000" placeholder="Tell us about your project"></textarea></div>
-<div class="hp" aria-hidden="true"><label for="company_website">Company website (leave blank)</label><input id="company_website" name="_honey" tabindex="-1" autocomplete="off"></div>
-<button class="btn btn-blue" type="submit">Submit</button>
+<form id="contact-form" method="post" novalidate>
+<noscript><p class="form-noscript">Our enquiry form needs JavaScript. Please email <a class="link" href="mailto:info@businessmovers.tech">info@businessmovers.tech</a> or call <a class="link" href="tel:+442039098200">020 3909 8200</a>.</p></noscript>
+<div class="row"><div class="f"><label for="name">First name *</label><input id="name" name="name" required maxlength="80" placeholder="Enter your first name" autocomplete="given-name" aria-describedby="name-err"><p class="ferr" id="name-err"></p></div>
+<div class="f"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" maxlength="30" placeholder="Enter your phone number" autocomplete="tel" aria-describedby="phone-err"><p class="ferr" id="phone-err"></p></div></div>
+<div class="f"><label for="email">Email *</label><input id="email" name="email" type="email" required maxlength="120" placeholder="Enter your email" autocomplete="email" aria-describedby="email-err"><p class="ferr" id="email-err"></p></div>
+<div class="f"><label for="message">Message *</label><textarea id="message" name="message" required maxlength="3000" placeholder="Tell us about your project" aria-describedby="message-err"></textarea><p class="ferr" id="message-err"></p></div>
+<div class="hp" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"><label for="company_url">Company URL (leave blank)</label><input id="company_url" name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
+<div class="f hcheck" id="hcheck" hidden><label for="hq" id="hq-label">Quick check: what is 3 + 4? *</label><input id="hq" name="hq" inputmode="numeric" maxlength="3" autocomplete="off" aria-describedby="hq-hint hq-err"><p class="hint" id="hq-hint">This helps us block automated spam. Type the answer as a number.</p><p class="ferr" id="hq-err"></p></div>
+<button class="btn btn-blue" type="submit" disabled>Submit</button>
 <p class="form-note" id="form-note" aria-live="polite">Your message is sent securely to our team at info@businessmovers.tech. See our <a class="link" href="/privacy-policy/">privacy policy</a>.</p>
 </form></div>
 <div class="reveal"><h2>Contact Us</h2>
@@ -62,4 +62,4 @@ addEventListener("load",function(){var s=document.createElement("script");s.asyn
 <div class="fbottom"><span>© 2026 BMT - Business Movers Tech</span><span>London - United Kingdom</span></div>
 </div></footer>
 <div class="sticky-cta"><a class="btn btn-blue" href="/contact/">Book a Consultation</a><a class="btn btn-navy" href="tel:+442039098200">Call us</a></div>
-<script src="/assets/site.js?v=live6"></script></body></html>
+<script src="/assets/site.js?v=live7"></script></body></html>
