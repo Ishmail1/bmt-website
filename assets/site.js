@@ -1,4 +1,8 @@
 (function(){
+  // email is never in the HTML: links carry data-k = reverse(base64(reverse(address))); rebuilt here into mailto links
+  function dk(k){try{return atob(k.split('').reverse().join('')).split('').reverse().join('')}catch(x){return ''}}
+  var EM=dk('==QZtFWasBkY1NXauV2cz12b2Vmcz5CdlNGa');
+  document.querySelectorAll('a[data-k]').forEach(function(a){var e=dk(a.getAttribute('data-k'));if(!e)return;a.href='mailto:'+e;a.textContent=e;a.removeAttribute('data-k');});
   var h=document.querySelector('.site-header'),sc=document.querySelector('.sticky-cta'),hasHero=document.querySelector('.hero,.proj-hero,.page-hero');
   function onScroll(){var y=window.scrollY;h.classList.toggle('solid', !hasHero || y>40); if(sc) sc.classList.toggle('on', y>window.innerHeight*0.8 && !document.body.classList.contains('open'));}
   window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
@@ -64,7 +68,7 @@
   if(form){
     var t0=Date.now(), note=document.getElementById('form-note'), btn=form.querySelector('button[type=submit]'), busy=false, human=0;
     var hc=document.getElementById('hcheck'), hq=document.getElementById('hq'), hql=document.getElementById('hq-label'), ans=null;
-    var CONTACT='<a class="link" href="mailto:info@businessmovers.tech">info@businessmovers.tech</a> or call <a class="link" href="tel:+442039098200">020 3909 8200</a>';
+    var CONTACT='<a class="link" href="mailto:'+EM+'">'+EM+'</a> or call <a class="link" href="tel:+442039098200">020 3909 8200</a>';
     var FALLBACK=' Please email us at '+CONTACT+'.';
     var BAD_TLD=/\.(ru|su|xyz|top|click|icu|buzz|cfd|sbs|cyou|monster|rest|bid|loan|win)$/i;
     var TEMP=['mailinator.com','guerrillamail.com','guerrillamail.net','guerrillamail.org','sharklasers.com','grr.la','10minutemail.com','temp-mail.org','tempmail.com','tempmail.net','yopmail.com','trashmail.com','getnada.com','dispostable.com','throwawaymail.com','maildrop.cc','fakeinbox.com','mailnesia.com','emailondeck.com','tempail.com','mohmal.com','mintemail.com','spamgourmet.com','moakt.com','tempr.email','discard.email','burnermail.io','1secmail.com','mail.tm','mailpoof.com','tempinbox.com','emailfake.com'];
@@ -72,7 +76,7 @@
     var LINK=/(https?:\/\/|\bwww\.|\[\/?(url|link|img)\b|<\s*a\s|href\s*=|\.(com|net|org|ru|info|xyz|top|biz)\/)/i;
     var FOREIGN=/[\u0400-\u052F\u2DE0-\u2DFF\uA640-\uA69F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\u0E00-\u0E7F]/g;
     var BLACKLIST='seo services,backlinks,guest post,link building,domain authority,first page of google,online casino,viagra,cialis,crypto investment,bitcoin investment,forex signals,porn,payday loan,binary options,buy followers,increase your traffic,[url=,href=,.ru/';
-    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+'hcet.srevomssenisub@ofni'.split('').reverse().join('');}
+    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+EM;}
     function mark(e){if(e.isTrusted) human++;}
     ['keydown','pointerdown','touchstart','input'].forEach(function(t){form.addEventListener(t,mark,{passive:true})});
     btn.disabled=false;
