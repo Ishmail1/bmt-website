@@ -1,0 +1,5 @@
+{
+  "name": "bmt-contact-worker",
+  "private": true,
+  "type": "module"
+}

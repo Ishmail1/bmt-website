@@ -3,3 +3,5 @@ build.py
 *.pyc
 __pycache__/
 .vercel
+workers/contact/.dev.vars
+workers/contact/.wrangler/

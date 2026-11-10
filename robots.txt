@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /workers/
 
 Sitemap: https://www.businessmoverstechnology.com/sitemap.xml

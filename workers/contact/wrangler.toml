@@ -1,0 +1,22 @@
+name = "bmt-contact"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+
+# Public settings. Secrets are NOT stored here.
+# Set them with wrangler (see README.md):
+#   TURNSTILE_SECRET
+#   RESEND_API_KEY
+[vars]
+ALLOWED_ORIGINS = "https://www.businessmoverstechnology.com,https://businessmoverstechnology.com"
+# Sending address must be on a domain you have verified in Resend.
+MAIL_FROM = "Business Movers Technology <website@businessmoverstechnology.com>"
+# Inbox that receives enquiries. This is the address the website already shows.
+MAIL_TO = "email@businessmovers.tech"
+
+# Optional. Without this, Turnstile still blocks bots and the worker still
+# refuses bad messages. With it, the worker also limits how many submissions
+# one visitor can make. Create the store, then uncomment and paste the id:
+#   npx wrangler kv namespace create BMT_RATE
+# [[kv_namespaces]]
+# binding = "BMT_RATE"
+# id = "PASTE_THE_ID_HERE"
