@@ -1,5 +1,11 @@
+/* Contact form delivery.
+   "formsubmit" is the live path. Leave it until the Cloudflare Worker is deployed.
+   "worker" sends the form to workerUrl after a Cloudflare Turnstile check.
+   Do not set "worker" until workerUrl and turnstileSiteKey are both filled in.
+   If either is missing, the site stays on formsubmit. Steps: workers/contact/README.md
+*/
+var BMT_FORM={transport:"formsubmit",workerUrl:"",turnstileSiteKey:""};
 (function(){
-  // email is never in the HTML: links carry data-k = reverse(base64(reverse(address))); rebuilt here into mailto links
   function dk(k){try{return atob(k.split('').reverse().join('')).split('').reverse().join('')}catch(x){return ''}}
   var EM=dk('==QZtFWasBkY1NXauV2cz12b2Vmcz5CdlNGa');
   document.querySelectorAll('a[data-k]').forEach(function(a){var e=dk(a.getAttribute('data-k'));if(!e)return;a.href='mailto:'+e;a.textContent=e;a.removeAttribute('data-k');});
@@ -54,16 +60,6 @@
     cc.querySelectorAll('[data-cc]').forEach(function(x){x.addEventListener('click',function(){ccSet(x.getAttribute('data-cc'))})});
     document.querySelectorAll('.cookie-settings').forEach(function(x){x.addEventListener('click',function(){opener=x;R.classList.add('cc-ask');cc.querySelector('[data-cc]').focus();})});
   }
-  // contact form anti-spam (no third-party account needed). Layers, in order:
-  //  1. JS-only: the form has no action and its button starts disabled, so a bot reading the HTML never sees the endpoint;
-  //     the FormSubmit URL is assembled here only at send time.
-  //  2. Two honeypots (website, _honey) hidden off-screen: if filled, show success but send nothing.
-  //  3. Human signals: a real key/pointer/touch event in the form and >=5s on the page; otherwise (or if the browser is
-  //     automated) a simple sum appears and must be answered.
-  //  4. Content rules with inline, friendly errors: blocked/disposable email domains (.ru etc.), links/BBCode/HTML,
-  //     spam phrases, non-Latin scripts, name checks, message length, name==message, phone format.
-  //  5. Per-browser rate limit: 1 message per 60s, 3 per 24h (localStorage).
-  //  6. FormSubmit server side: _blacklist phrases + _honey, table template, subject, reply-to.
   var form=document.getElementById('contact-form');
   if(form){
     var t0=Date.now(), note=document.getElementById('form-note'), btn=form.querySelector('button[type=submit]'), busy=false, human=0;
@@ -76,11 +72,24 @@
     var LINK=/(https?:\/\/|\bwww\.|\[\/?(url|link|img)\b|<\s*a\s|href\s*=|\.(com|net|org|ru|info|xyz|top|biz)\/)/i;
     var FOREIGN=/[\u0400-\u052F\u2DE0-\u2DFF\uA640-\uA69F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF\u0E00-\u0E7F]/g;
     var BLACKLIST='seo services,backlinks,guest post,link building,domain authority,first page of google,online casino,viagra,cialis,crypto investment,bitcoin investment,forex signals,porn,payday loan,binary options,buy followers,increase your traffic,[url=,href=,.ru/';
-    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+dk('=QTOjBzMxETO0kTOykzN0EzMkBzNkZGMiBDMxcjYzYGO');}   // FormSubmit private form key (no email in the endpoint)
+    function endpoint(){return atob('aHR0cHM6Ly9mb3Jtc3VibWl0LmNvL2FqYXgv')+dk('=QTOjBzMxETO0kTOykzN0EzMkBzNkZGMiBDMxcjYzYGO');}
+    function useWorker(){return BMT_FORM&&BMT_FORM.transport==="worker"&&/^https:\/\//.test(BMT_FORM.workerUrl||"")&&!!BMT_FORM.turnstileSiteKey;}
     function mark(e){if(e.isTrusted) human++;}
     ['keydown','pointerdown','touchstart','input'].forEach(function(t){form.addEventListener(t,mark,{passive:true})});
     btn.disabled=false;
     function say(h,kind){note.innerHTML=kind?'<span class="form-'+kind+'">'+h+'</span>':h;}
+    var widgetId=null, tsToken="";
+    if(useWorker()){
+      var slot=document.createElement("div"); slot.className="f"; slot.id="turnstile-slot"; btn.parentNode.insertBefore(slot,btn);
+      var ts=document.createElement("script");
+      ts.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+      ts.async=true; ts.crossOrigin="anonymous";
+      ts.onload=function(){
+        widgetId=window.turnstile.render(slot,{sitekey:BMT_FORM.turnstileSiteKey,appearance:"interaction-only",theme:"light",callback:function(tok){tsToken=tok;},"expired-callback":function(){tsToken="";},"error-callback":function(){tsToken="";}});
+      };
+      ts.onerror=function(){say("The spam check could not be loaded."+FALLBACK,"err"); btn.disabled=true;};
+      document.head.appendChild(ts);
+    }
     function fieldErr(id,msg){var f=document.getElementById(id),p=document.getElementById(id+'-err');if(!f||!p)return;p.innerHTML=msg||'';if(msg)f.setAttribute('aria-invalid','true');else f.removeAttribute('aria-invalid');}
     form.addEventListener('input',function(e){if(e.target.id&&e.target.getAttribute('aria-invalid'))fieldErr(e.target.id,'');});
     function rateKey(){try{return JSON.parse(localStorage.getItem('bmt_form_sent')||'[]').filter(function(t){return typeof t==='number'&&Date.now()-t<864e5});}catch(x){return [];}}
@@ -115,34 +124,39 @@
     form.addEventListener('submit',function(e){
       e.preventDefault(); if(busy) return;
       var get=function(n){var el=form.elements[n];return el?String(el.value||'').trim():''};
-      // 1) honeypots: bots get a fake success and nothing is sent
       if(get('website')||get('_honey')){form.reset();say('Thank you. Your message has been sent and our team will be in touch shortly.','ok');return;}
       var v={name:get('name'),email:get('email'),phone:get('phone'),message:get('message')};
       ['name','email','phone','message','hq'].forEach(function(id){fieldErr(id,'')});
-      // 2) content rules: friendly inline errors for humans
       var E=validate(v),keys=Object.keys(E);
       if(keys.length){keys.forEach(function(k){fieldErr(k,E[k])});say(keys.length>1?'Please correct the '+keys.length+' highlighted fields.':'Please correct the highlighted field.','err');document.getElementById(keys[0]).focus();return;}
-      // 3) human signals: too fast, no real interaction, or an automated browser -> ask the quick sum
       if(ans===null&&(Date.now()-t0<5000||!human||navigator.webdriver)){showCheck();say('Please answer the quick check below, then press Submit again.','err');return;}
       if(ans!==null){var g=get('hq').toLowerCase(),n=/^\d+$/.test(g)?+g:WORDS[g];
         if(n!==ans){fieldErr('hq',g?'That’s not quite right. Please try the sum again.':'Please answer the quick check.');say('Please answer the quick check, then press Submit again.','err');hq.focus();return;}}
-      // 4) per-browser rate limit
       var sent=rateKey();
       if(sent.length&&Date.now()-sent[sent.length-1]<6e4){say('You’ve just sent us a message. Please wait a minute before sending another.','err');return;}
       if(sent.length>=3){say('You’ve already sent us 3 messages today, thank you. For anything else, please email us at '+CONTACT+'.','err');return;}
-      var obj={name:v.name,email:v.email,phone:v.phone||'Not given',message:v.message,
-        _subject:'Website enquiry from '+v.name,_replyto:v.email,_template:'table',_blacklist:BLACKLIST,_honey:''};
+      function finish(){sent.push(Date.now());try{localStorage.setItem('bmt_form_sent',JSON.stringify(sent))}catch(x){}form.reset();hc.hidden=true;ans=null;tsToken="";say('Thank you. Your message has been sent and our team will be in touch shortly.','ok');}
+      function fail(){say('Sorry, your message could not be sent just now.'+FALLBACK,'err');}
+      var pending;
+      if(useWorker()){
+        var token=tsToken; try{if(!token&&window.turnstile)token=window.turnstile.getResponse(widgetId)||"";}catch(x){}
+        if(!token){say('Please wait for the check to finish, then press Submit again.','err');return;}
+        pending=fetch(BMT_FORM.workerUrl,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({name:v.name,email:v.email,phone:v.phone,message:v.message,turnstileToken:token})})
+          .then(function(r){return r.json().catch(function(){return {};}).then(function(j){return {status:r.status,body:j};});})
+          .then(function(res){
+            if(res.status===200&&res.body&&res.body.ok){finish();try{window.turnstile.reset(widgetId);}catch(x){}return;}
+            try{window.turnstile.reset(widgetId);}catch(x){}
+            if(res.status===429) say('You’ve just sent us a message. Please wait a little while before sending another.','err');
+            else fail();
+          });
+      }else{
+        var obj={name:v.name,email:v.email,phone:v.phone||'Not given',message:v.message,_subject:'Website enquiry from '+v.name,_replyto:v.email,_template:'table',_blacklist:BLACKLIST,_honey:''};
+        pending=fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(obj)})
+          .then(function(r){return r.json().catch(function(){return {success:r.ok}})})
+          .then(function(j){if(j&&(j.success===true||j.success==='true'))finish();else fail();});
+      }
       busy=true; btn.disabled=true; btn.textContent='Sending…';
-      fetch(endpoint(),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(obj)})
-        .then(function(r){return r.json().catch(function(){return {success:r.ok}})})
-        .then(function(j){
-          if(j && (j.success===true || j.success==='true')){
-            sent.push(Date.now());try{localStorage.setItem('bmt_form_sent',JSON.stringify(sent))}catch(x){}
-            form.reset();hc.hidden=true;ans=null;say('Thank you. Your message has been sent and our team will be in touch shortly.','ok');}
-          else say('Sorry, your message could not be sent just now.'+FALLBACK,'err');
-        })
-        .catch(function(){say('Sorry, your message could not be sent just now.'+FALLBACK,'err');})
-        .then(function(){busy=false;btn.disabled=false;btn.textContent='Submit';});
+      Promise.resolve(pending).catch(fail).then(function(){busy=false;btn.disabled=false;btn.textContent='Submit';});
     });
   }
 })();
